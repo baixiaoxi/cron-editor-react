@@ -1,5 +1,15 @@
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin');
+
 const webpackConfig = {
     entry: './src/index.jsx',
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({parallel: true}),
+            new CssMinimizerPlugin({parallel: true})
+        ]
+    },
     output: {
         filename: 'index.js',
         library: 'antd-cron',
@@ -28,7 +38,9 @@ const webpackConfig = {
                     {
                         loader: 'less-loader',
                         options: {
-                            javascriptEnabled: true,
+                            lessOptions: {
+                                javascriptEnabled: true,
+                            }
                         },
                     },
                 ],

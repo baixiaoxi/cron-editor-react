@@ -1,4 +1,6 @@
 const webpack = require('webpack')
+const path = require('path');
+
 const webpackConfig = {
     entry: './index.js',
     output: {
@@ -6,14 +8,18 @@ const webpackConfig = {
         publicPath: '/',
     },
     mode: 'development',
-    devtool: 'cheap-module-eval-source-map',
+    devtool: false,
+    plugins: [new webpack.SourceMapDevToolPlugin({})],
     devServer: {
         port: 3000,
         open: true,
-        host: '0.0.0.0',
-        openPage: '/dist/index.html',
+        host: 'localhost',
+        open: ['/index.html'],
         hot: true,
-        publicPath: '/',
+        static: {
+            directory: path.join(__dirname, 'dist'),
+            publicPath: '/'
+        }
     },
 
     module: {
@@ -47,7 +53,9 @@ const webpackConfig = {
                     {
                         loader: 'less-loader',
                         options: {
-                            javascriptEnabled: true,
+                            lessOptions: {
+                                javascriptEnabled: true,
+                            }
                         },
                     },
                 ],
