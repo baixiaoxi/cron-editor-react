@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import { Radio, InputNumber, RadioChangeEvent, Select, List, message } from 'antd';
-import { isNumber } from 'utils/index';
-import { CronData } from 'index';
+import { isNumber } from '../utils/index';
+import { CronData, CronType } from '../index';
 
 const { Group } = Radio;
 
@@ -92,7 +92,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== "period"}
+                                disabled={type !== CronType.PERIOD}
                             />{" "}
                             到{" "}
                             <InputNumber
@@ -116,7 +116,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== "period"}
+                                disabled={type !== CronType.PERIOD}
                             />
                             &nbsp;日&nbsp;
                         </List.Item>
@@ -138,7 +138,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== "beginInterval"}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{" "}
                             日开始， 每{" "}
                             <InputNumber
@@ -156,7 +156,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== "beginInterval"}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />
                             &nbsp;天执行一次
                         </List.Item>
@@ -178,7 +178,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== "closeWorkDay"}
+                                disabled={type !== CronType.CLOSE_WORK_DAY}
                             />
                             &nbsp;日最近的那个工作日
                         </List.Item>
@@ -200,7 +200,6 @@ export default class Day extends React.Component<PropsType, {}> {
                                         }
                                     }}
                                     disabled
-                                // disabled={type !== "last"}
                                 />{" "}
                                 天
                             </Radio>
@@ -222,7 +221,7 @@ export default class Day extends React.Component<PropsType, {}> {
                                     this.props.day.some = value;
                                     this.props.onChange(this.props.day);
                                 }}
-                                disabled={type !== "some"}
+                                disabled={type !== CronType.SOME}
                             >
                                 {this.dayOptions}
                             </Select>

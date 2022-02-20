@@ -5,17 +5,14 @@
  */
 
 class CronParse {
-    constructor() {
-        // constructor是一个构造方法，用来接收参数
-        this.dayRule = "";
-        this.dayRuleSup = "";
-        this.dateArr = [];
-        this.resultList = [];
-        this.isShow = false;
-    }
+    dayRule: string = '';
+    dayRuleSup: string | number | number[] = '';
+    dateArr: number[][] = [];
+    resultList: string[] = [];
+    isShow: boolean = false;
 
     // 表达式值变化时，开始去计算结果
-    expressionChange(cron) {
+    expressionChange(cron: string) {
         // 计算开始-隐藏结果
         this.isShow = false;
         // 获取规则数组[0秒、1分、2时、3日、4月、5星期、6年]
@@ -48,12 +45,12 @@ class CronParse {
         const MDate = this.dateArr[4];
         const YDate = this.dateArr[5];
         // 获取当前时间在数组中的索引
-        let sIdx = this.getIndex(sDate, nSecond);
-        let mIdx = this.getIndex(mDate, nMin);
-        let hIdx = this.getIndex(hDate, nHour);
-        let DIdx = this.getIndex(DDate, nDay);
-        let MIdx = this.getIndex(MDate, nMouth);
-        const YIdx = this.getIndex(YDate, nYear);
+        let sIdx = this.getIndex(sDate, nSecond) ?? 0;
+        let mIdx = this.getIndex(mDate, nMin) ?? 0;
+        let hIdx = this.getIndex(hDate, nHour) ?? 0;
+        let DIdx = this.getIndex(DDate, nDay) ?? 0;
+        let MIdx = this.getIndex(MDate, nMouth) ?? 0;
+        const YIdx = this.getIndex(YDate, nYear) ?? 0;
         // 重置月日时分秒的函数(后面用的比较多)
         const resetSecond = function() {
             sIdx = 0;
@@ -111,8 +108,7 @@ class CronParse {
             // 循环月份数组
             goMouth: for (let Mi = MIdx; Mi < MDate.length; Mi++) {
                 // 赋值、方便后面运算
-                let MM = MDate[Mi];
-                MM = MM < 10 ? `0${MM}` : MM;
+                let MM: string = MDate[Mi] < 10 ? `0${MDate[Mi]}` : MDate[Mi].toString();
                 // 如果到达最大值时
                 if (nDay > DDate[DDate.length - 1]) {
                     resetDay();
@@ -125,7 +121,7 @@ class CronParse {
                 // 循环日期数组
                 goDay: for (let Di = DIdx; Di < DDate.length; Di++) {
                     // 赋值、方便后面运算
-                    let DD = DDate[Di];
+                    let DD: string | number = DDate[Di];
                     let thisDD = DD < 10 ? `0${DD}` : DD;
                     // 如果到达最大值时
                     if (nHour > hDate[hDate.length - 1]) {
@@ -168,7 +164,7 @@ class CronParse {
                             }
                         }
                         // 获取达到条件的日期是星期X
-                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), "week");
+                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), "week") as number;
                         // 当星期日时
                         if (thisWeek === 0) {
                             // 先找下一个日，并判断是否为月底
@@ -189,9 +185,9 @@ class CronParse {
                     } else if (this.dayRule === "weekDay") {
                         // 如果指定了是星期几
                         // 获取当前日期是属于星期几
-                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), "week");
+                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), "week") as number;
                         // 校验当前星期是否在星期池（dayRuleSup）中
-                        if (Array.indexOf(this.dayRuleSup, thisWeek) < 0) {
+                        if ((this.dayRuleSup as number[]).indexOf(thisWeek) < 0) {
                             // 如果到达最大值时
                             if (Di === DDate.length - 1) {
                                 resetDay();
@@ -206,11 +202,12 @@ class CronParse {
                     } else if (this.dayRule === "assWeek") {
                         // 如果指定了是第几周的星期几
                         // 获取每月1号是属于星期几
-                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), "week");
-                        if (this.dayRuleSup[1] >= thisWeek) {
-                            DD = (this.dayRuleSup[0] - 1) * 7 + this.dayRuleSup[1] - thisWeek + 1;
+                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), "week") as number;
+                        let arr = this.dayRuleSup as number[];
+                        if (arr[1] >= thisWeek) {
+                            DD = (arr[0] - 1) * 7 + arr[1] - thisWeek + 1;
                         } else {
-                            DD = this.dayRuleSup[0] * 7 + this.dayRuleSup[1] - thisWeek + 1;
+                            DD = arr[0] * 7 + arr[1] - thisWeek + 1;
                         }
                     } else if (this.dayRule === "lastWeek") {
                         // 如果指定了每月最后一个星期几
@@ -222,12 +219,12 @@ class CronParse {
                             }
                         }
                         // 获取月末最后一天是星期几
-                        const thisWeek = this.formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), "week");
+                        const thisWeek: number = this.formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), "week") as number;
                         // 找到要求中最近的那个星期几
                         if (this.dayRuleSup < thisWeek) {
-                            DD -= thisWeek - this.dayRuleSup;
+                            DD -= thisWeek - (this.dayRuleSup as number);
                         } else if (this.dayRuleSup > thisWeek) {
-                            DD -= 7 - (this.dayRuleSup - thisWeek);
+                            DD -= 7 - ((this.dayRuleSup as number) - thisWeek);
                         }
                     }
                     // 判断时间值是否小于10置换成“05”这种格式
@@ -326,7 +323,7 @@ class CronParse {
     }
 
     // 用于计算某位数字在数组中的索引
-    getIndex(arr, value) {
+    getIndex(arr: number[], value: number): number | undefined {
         if (value <= arr[0] || value > arr[arr.length - 1]) {
             return 0;
         }
@@ -335,10 +332,12 @@ class CronParse {
                 return i + 1;
             }
         }
+
+        return undefined;
     }
 
     // 获取"年"数组
-    getYearArr(rule, year) {
+    getYearArr(rule: string, year: number) {
         this.dateArr[5] = this.getOrderArr(year, year + 100);
         if (rule !== undefined) {
             if (rule.indexOf("-") >= 0) {
@@ -352,7 +351,7 @@ class CronParse {
     }
 
     // 获取"月"数组
-    getMouthArr(rule) {
+    getMouthArr(rule: string) {
         this.dateArr[4] = this.getOrderArr(1, 12);
         if (rule.indexOf("-") >= 0) {
             this.dateArr[4] = this.getCycleArr(rule, 12, false);
@@ -364,7 +363,7 @@ class CronParse {
     }
 
     // 获取"日"数组-主要为日期规则
-    getWeekArr(rule) {
+    getWeekArr(rule: string) {
         // 只有当日期规则的两个值均为“”时则表达日期是有选项的
         if (this.dayRule === "" && this.dayRuleSup === "") {
             if (rule.indexOf("-") >= 0) {
@@ -373,14 +372,14 @@ class CronParse {
             } else if (rule.indexOf("#") >= 0) {
                 this.dayRule = "assWeek";
                 const matchRule = rule.match(/[0-9]{1}/g);
-                this.dayRuleSup = [Number(matchRule[0]), Number(matchRule[1])];
+                this.dayRuleSup = [Number(matchRule![0]), Number(matchRule![1])];
                 this.dateArr[3] = [1];
                 if (this.dayRuleSup[1] === 7) {
                     this.dayRuleSup[1] = 0;
                 }
             } else if (rule.indexOf("L") >= 0) {
                 this.dayRule = "lastWeek";
-                this.dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)[0]);
+                this.dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)![0]);
                 this.dateArr[3] = [31];
                 if (this.dayRuleSup === 7) {
                     this.dayRuleSup = 0;
@@ -391,9 +390,10 @@ class CronParse {
             }
             // 如果weekDay时将7调整为0【week值0即是星期日】
             if (this.dayRule === "weekDay") {
-                for (let i = 0; i < this.dayRuleSup.length; i++) {
-                    if (this.dayRuleSup[i] === 7) {
-                        this.dayRuleSup[i] = 0;
+                let arr = this.dayRuleSup as number[]
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i] === 7) {
+                        (this.dayRuleSup as number[])[i] = 0;
                     }
                 }
             }
@@ -401,7 +401,7 @@ class CronParse {
     }
 
     // 获取"日"数组-少量为日期规则
-    getDayArr(rule) {
+    getDayArr(rule: string) {
         this.dateArr[3] = this.getOrderArr(1, 31);
         this.dayRule = "";
         this.dayRuleSup = "";
@@ -413,8 +413,10 @@ class CronParse {
             this.dayRuleSup = "null";
         } else if (rule.indexOf("W") >= 0) {
             this.dayRule = "workDay";
-            this.dayRuleSup = Number(rule.match(/[0-9]{1,2}/g)[0]);
-            this.dateArr[3] = [this.dayRuleSup];
+            let numberStr = rule.match(/[0-9]{1,2}/g)?.[0];
+            let tmpNum = Number(numberStr);
+            this.dateArr[3] = [tmpNum];
+            this.dayRuleSup = tmpNum.toString();
         } else if (rule.indexOf("L") >= 0) {
             this.dayRule = "lastDay";
             this.dayRuleSup = "null";
@@ -428,7 +430,7 @@ class CronParse {
     }
 
     // 获取"时"数组
-    getHourArr(rule) {
+    getHourArr(rule: string) {
         this.dateArr[2] = this.getOrderArr(0, 23);
         if (rule.indexOf("-") >= 0) {
             this.dateArr[2] = this.getCycleArr(rule, 24, true);
@@ -440,7 +442,7 @@ class CronParse {
     }
 
     // 获取"分"数组
-    getMinArr(rule) {
+    getMinArr(rule: string) {
         this.dateArr[1] = this.getOrderArr(0, 59);
         if (rule.indexOf("-") >= 0) {
             this.dateArr[1] = this.getCycleArr(rule, 60, true);
@@ -452,7 +454,7 @@ class CronParse {
     }
 
     // 获取"秒"数组
-    getSecondArr(rule) {
+    getSecondArr(rule: string) {
         this.dateArr[0] = this.getOrderArr(0, 59);
         if (rule.indexOf("-") >= 0) {
             this.dateArr[0] = this.getCycleArr(rule, 60, true);
@@ -464,7 +466,7 @@ class CronParse {
     }
 
     // 根据传进来的min-max返回一个顺序的数组
-    getOrderArr(min, max) {
+    getOrderArr(min: number, max: number): number[] {
         const arr = [];
         for (let i = min; i <= max; i++) {
             arr.push(i);
@@ -473,7 +475,7 @@ class CronParse {
     }
 
     // 根据规则中指定的零散值返回一个数组
-    getAssignArr(rule) {
+    getAssignArr(rule: string) {
         const arr = [];
         const assiginArr = rule.split(",");
         for (let i = 0; i < assiginArr.length; i++) {
@@ -484,7 +486,7 @@ class CronParse {
     }
 
     // 根据一定算术规则计算返回一个数组
-    getAverageArr(rule, limit) {
+    getAverageArr(rule: string, limit: number) {
         const arr = [];
         const agArr = rule.split("/");
 
@@ -498,7 +500,7 @@ class CronParse {
     }
 
     // 根据规则返回一个具有周期性的数组
-    getCycleArr(rule, limit, status) {
+    getCycleArr(rule: string, limit: number, status: boolean): number[] {
         // status--表示是否从0开始（则从1开始）
         const arr = [];
         const cycleArr = rule.split("-");
@@ -514,20 +516,22 @@ class CronParse {
             }
             arr.push(Math.round((i % limit) + add));
         }
+
         arr.sort(this.compare);
         return arr;
     }
 
     // 比较数字大小（用于Array.sort）
-    compare(value1, value2) {
+    compare(value1: number, value2: number): number {
         if (value2 - value1 > 0) {
             return -1;
         }
+
         return 1;
     }
 
     // 格式化日期格式如：2017-9-19 18:04:33
-    formatDate(value, type) {
+    formatDate(value: Date | number, type: string | undefined = undefined): string | number {
         // 计算日期相关值
         const time = typeof value === "number" ? new Date(value) : value;
         const Y = time.getFullYear();
@@ -541,21 +545,21 @@ class CronParse {
         if (type === undefined) {
             return `${Y}-${M < 10 ? `0${M}` : M}-${D < 10 ? `0${D}` : D} ${h < 10 ? `0${h}` : h}:${m < 10 ? `0${m}` : m}:${s < 10 ? `0${s}` : s}`;
         }
+
         if (type === "week") {
             return week;
         }
+
+        return '';
     }
 
     // 检查日期是否存在
-    checkDate(value) {
+    checkDate(value: string): boolean {
         const time = new Date(value);
         const format = this.formatDate(time);
+
         return value === format;
     }
 }
 
-// export default {
-//     CronParse
-// }
 export default CronParse;
-// module.exports = CronParse

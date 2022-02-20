@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import { Radio, InputNumber, RadioChangeEvent, List, message, Select } from 'antd';
-import { isNumber } from 'utils/index';
-import { CronData } from 'index';
+import { isNumber } from '../utils/index';
+import { CronData, CronType } from '../index';
 
 const { Group } = Radio;
 
@@ -78,7 +78,7 @@ export default class Month extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />{' '}
                             到{' '}
                             <InputNumber
@@ -100,7 +100,7 @@ export default class Month extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />
                             &nbsp;月&nbsp;
                         </List.Item>
@@ -123,7 +123,7 @@ export default class Month extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{' '}
                             月开始， 每{' '}
                             <InputNumber
@@ -141,7 +141,7 @@ export default class Month extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{' '}
                             月执行一次
                         </List.Item>

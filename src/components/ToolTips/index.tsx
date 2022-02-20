@@ -6,10 +6,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import useMergedState from 'rc-util/lib/hooks/useMergedState';
-import ExclamationCircleFilled from '@ant-design/icons/ExclamationCircleFilled';
 import KeyCode from 'rc-util/lib/KeyCode';
 import Tooltip, { AbstractTooltipProps } from 'antd/lib/tooltip';
-import { LegacyButtonType, ButtonProps } from 'antd/lib/button/button';
 import LocaleReceiver from 'antd/lib/locale-provider/LocaleReceiver';
 import defaultLocale from 'antd/lib/locale/default';
 import { ConfigContext } from 'antd/lib/config-provider';

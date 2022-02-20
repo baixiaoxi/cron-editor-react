@@ -66,7 +66,6 @@ const webpackConfig = {
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
-        plugins: [new TsconfigPathsPlugin({configFile: "./tsconfig.json"})]
     },
 }
 module.exports = webpackConfig

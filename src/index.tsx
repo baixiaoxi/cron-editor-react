@@ -6,17 +6,17 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Tabs, Row, Col, Input, List, Collapse } from 'antd';
-import Year from 'components/Year';
-import Month from 'components/Month';
-import Week from 'components/Week';
-import Day from 'components/Day';
-import Hour from 'components/Hour';
-import Minute from 'components/Minute';
-import Second from 'components/Second';
-import CronParse from 'utils/parse-lib';
+import Year from './components/Year';
+import Month from './components/Month';
+import Week from './components/Week';
+import Day from './components/Day';
+import Hour from './components/Hour';
+import Minute from './components/Minute';
+import Second from './components/Second';
+import CronParse from './utils/parse-lib';
 import CronParser from 'cron-parser';
 import moment from 'moment';
-import 'css/index.less';
+import './css/index.less';
 
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
@@ -30,7 +30,7 @@ interface PropsType {
     showCronTab: boolean,// 显示cron编辑器
 }
 
-enum CronType {
+export enum CronType {
     NONE = '',// ''
     ASTERISK = '*', // *
     QUESTION = '?', // ?

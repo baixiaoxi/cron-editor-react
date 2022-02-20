@@ -18,7 +18,6 @@
       "noImplicitAny": true,
       "incremental": true,
       // make all imports without a dot '.' prefix relative to the base url
-      "baseUrl": "./src"
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["node_modules"]

@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import { Radio, InputNumber, Select, List, message } from 'antd';
-import { isNumber } from 'utils/index';
-import { CronData } from 'index';
+import { isNumber } from '../utils/index';
+import { CronData, CronType } from '../index';
 
 const { Group } = Radio;
 
@@ -92,7 +92,7 @@ export default class Week extends React.Component<PropsType, {}> {
                                     this.props.week.start = value;
                                     this.props.onChange(this.props.week);
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             >
                                 {this.getWeekOptions()}
                             </Select>{' '}
@@ -106,7 +106,7 @@ export default class Week extends React.Component<PropsType, {}> {
                                     this.props.week.end = value;
                                     this.props.onChange(this.props.week);
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             >
                                 {this.getWeekOptions()}
                             </Select>
@@ -128,7 +128,7 @@ export default class Week extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{' '}
                             周的{' '}
                             <Select
@@ -141,7 +141,7 @@ export default class Week extends React.Component<PropsType, {}> {
                                     this.props.week.beginEvery = value;
                                     this.props.onChange(this.props.week);
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             >
                                 {this.getWeekOptions()}
                             </Select>

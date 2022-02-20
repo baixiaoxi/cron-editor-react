@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import { Radio, InputNumber, message, List, Select } from 'antd';
-import { isNumber } from 'utils/index';
-import { CronData } from 'index';
+import { isNumber } from '../utils/index';
+import { CronData, CronType } from '../index';
 
 const { Group } = Radio;
 
@@ -79,7 +79,7 @@ export default class Second extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />
                             &nbsp;到&nbsp;
                             <InputNumber
@@ -102,7 +102,7 @@ export default class Second extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />
                             &nbsp;秒&nbsp;
                         </List.Item>
@@ -125,7 +125,7 @@ export default class Second extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{' '}
                             &nbsp;秒开始， 每 &nbsp;
                             <InputNumber
@@ -144,7 +144,7 @@ export default class Second extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'beginInterval'}
+                                disabled={type !== CronType.BEGIN_INTERVAL}
                             />{' '}
                             &nbsp;秒执行一次
                         </List.Item>

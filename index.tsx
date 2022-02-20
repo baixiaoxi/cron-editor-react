@@ -1,4 +1,4 @@
-import React from 'react';
-import ReactDom from 'react-dom';
-import App from './App.tsx';
-ReactDom.render(<App />, document.getElementById('app'))
+import Popconfirm from './src/components/ToolTips/';
+import Cron from './src';
+
+export default {Popconfirm, Cron};

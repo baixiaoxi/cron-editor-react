@@ -5,8 +5,8 @@
  */
 import React from 'react';
 import { Radio, InputNumber, message, Col, List } from 'antd';
-import { isNumber } from 'utils/index';
-import { CronData } from 'index';
+import { isNumber } from '../utils/index';
+import { CronData, CronType } from '../index';
 
 const { Group } = Radio;
 
@@ -55,7 +55,7 @@ export default class Year extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />
                             {' - '}
                             <InputNumber
@@ -74,7 +74,7 @@ export default class Year extends React.Component<PropsType, {}> {
                                         message.info('输入不合法')
                                     }
                                 }}
-                                disabled={type !== 'period'}
+                                disabled={type !== CronType.PERIOD}
                             />
                         </List.Item>
                     </List>

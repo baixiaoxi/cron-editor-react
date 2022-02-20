@@ -4,10 +4,10 @@ const tsImportPluginFactory = require('ts-import-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const webpackConfig = {
-    entry: './index.tsx',
+    entry: './ReactApp.tsx',
     devtool: 'inline-source-map',
     output: {
-        filename: 'index.tsx',
+        filename: 'ReactApp.tsx',
         publicPath: '/',
     },
     mode: 'development',
@@ -64,7 +64,6 @@ const webpackConfig = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
-        plugins: [new TsconfigPathsPlugin({configFile: "./tsconfig.json"})]
     },
     plugins: [new webpack.HotModuleReplacementPlugin()],
 }

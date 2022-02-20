@@ -4,10 +4,10 @@
  * 日期：2019.11.04
  */
 import React from "react";
-import Cron from 'index';
+import Cron from './src/index';
 import { Button, message } from 'antd';
-import Popconfirm from 'components/ToolTips';
-import 'components/ToolTips/style';
+import Popconfirm from './src/components/ToolTips';
+import './src/components/ToolTips/style';
 
 interface StateType {
     visible: boolean;
