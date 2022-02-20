@@ -1,0 +1,10 @@
+@root-entry-name: default;
+
+@import 'antd/lib/style/themes/index';
+@import 'antd/lib/style/mixins/index';
+
+@popconfirm-prefix-cls: ~'@{ant-prefix}-popconfirm';
+
+.@{popconfirm-prefix-cls} {
+  z-index: @zindex-popoconfirm;
+}

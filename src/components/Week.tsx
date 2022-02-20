@@ -3,12 +3,19 @@
  * 作者：宋鑫鑫
  * 日期：2019.11.04
  */
-import React, { PureComponent } from 'react'
-import { Radio, InputNumber, Row, Col, Select, List, Checkbox, message } from 'antd'
-const { Group } = Radio
-import { isNumber } from '../utils/index'
+import React from 'react';
+import { Radio, InputNumber, Select, List, message } from 'antd';
+import { isNumber } from 'utils/index';
+import { CronData } from 'index';
 
-export default class Week extends PureComponent {
+const { Group } = Radio;
+
+interface PropsType {
+    week: CronData,
+    onChange: Function,
+}
+
+export default class Week extends React.Component<PropsType, {}> {
     weekOptions = [
         {
             label: '星期日',
@@ -50,22 +57,6 @@ export default class Week extends PureComponent {
         })
     }
 
-    changeParams(type, value) {
-        const state = { ...this.props.week }
-        state[type] = value
-        // if (type === 'start') {
-        //     if (state.end - state.start <= 1) {
-        //         state.end = value + 1;
-        //     }
-        // }
-        // if (type === 'end') {
-        //     if (state.end - state.start <= 1) {
-        //         state.start = value - 1;
-        //     }
-        // }
-        this.props.onChange(state)
-    }
-
     render() {
         const {
             week: { type, start, end, some, begin, beginEvery, last },
@@ -98,7 +89,8 @@ export default class Week extends PureComponent {
                                 size="small"
                                 value={start}
                                 onChange={(value) => {
-                                    this.changeParams('start', value)
+                                    this.props.week.start = value;
+                                    this.props.onChange(this.props.week);
                                 }}
                                 disabled={type !== 'period'}
                             >
@@ -111,7 +103,8 @@ export default class Week extends PureComponent {
                                 value={end}
                                 size="small"
                                 onChange={(value) => {
-                                    this.changeParams('end', value)
+                                    this.props.week.end = value;
+                                    this.props.onChange(this.props.week);
                                 }}
                                 disabled={type !== 'period'}
                             >
@@ -126,10 +119,11 @@ export default class Week extends PureComponent {
                                 placeholder="周"
                                 size="small"
                                 value={begin}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 4) {
-                                        this.changeParams('begin', value)
+                                        this.props.week.begin = value;
+                                        this.props.onChange(this.props.week);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -139,12 +133,13 @@ export default class Week extends PureComponent {
                             周的{' '}
                             <Select
                                 style={{ width: 80 }}
-                                defaultValue={'1'}
+                                defaultValue={1}
                                 placeholder="星期"
                                 value={beginEvery}
                                 size="small"
                                 onChange={(value) => {
-                                    this.changeParams('beginEvery', value)
+                                    this.props.week.beginEvery = value;
+                                    this.props.onChange(this.props.week);
                                 }}
                                 disabled={type !== 'beginInterval'}
                             >
@@ -160,7 +155,8 @@ export default class Week extends PureComponent {
                                 size="small"
                                 value={last}
                                 onChange={(value) => {
-                                    this.changeParams('last', value)
+                                    this.props.week.last = value;
+                                    this.props.onChange(this.props.week);
                                 }}
                                 disabled={type !== 'last'}
                             >
@@ -180,21 +176,13 @@ export default class Week extends PureComponent {
                                     if (value.length < 1) {
                                         return message.warn('至少选择一项')
                                     }
-                                    this.changeParams('some', value)
+                                    this.props.week.some = value;
+                                    this.props.onChange(this.props.week);
                                 }}
                                 disabled={type !== 'some'}
                             >
                                 {this.getWeekOptions()}
                             </Select>
-                            {/* <Checkbox.Group
-                                value={some}
-                                defaultValue="1"
-                                onChange={value => {
-                                    this.changeParams("some", value);
-                                }}
-                                options={this.weekOptions}
-                                disabled={type !== "some"}
-                            /> */}
                         </List.Item>
                     </List>
                 </Group>

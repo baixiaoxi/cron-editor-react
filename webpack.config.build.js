@@ -1,8 +1,11 @@
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const path = require("path/posix");
 const TerserPlugin = require('terser-webpack-plugin');
+const tsImportPluginFactory = require('ts-import-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const webpackConfig = {
-    entry: './src/index.jsx',
+    entry: './src/index.tsx',
     optimization: {
         minimize: true,
         minimizer: [
@@ -11,7 +14,8 @@ const webpackConfig = {
         ]
     },
     output: {
-        filename: 'index.js',
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
         library: 'antd-cron',
         libraryTarget: 'umd',
         libraryExport: 'default', // 默认导出
@@ -26,9 +30,22 @@ const webpackConfig = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx)$/,
+                test: /\.(js|jsx|ts|tsx)$/,
+                loader: 'ts-loader',
                 exclude: /(node_modules|bower_components)/,
-                use: ['babel-loader'],
+                options: {
+                    transpileOnly: true,
+                    getCustomTransformers: () => ({
+                        before: [tsImportPluginFactory([{
+                            libraryName: 'antd',
+                            libraryDirectory: 'lib',
+                            style: true,
+                        }])]
+                    }),
+                    compilerOptions: {
+                        module: 'es2015'
+                    }
+                }
             },
             {
                 test: /\.less$/,
@@ -48,7 +65,8 @@ const webpackConfig = {
         ],
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.ts', '.tsx', '.js'],
+        plugins: [new TsconfigPathsPlugin({configFile: "./tsconfig.json"})]
     },
 }
 module.exports = webpackConfig

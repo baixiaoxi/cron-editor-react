@@ -3,40 +3,25 @@
  * 作者：宋鑫鑫
  * 日期：2019.11.04
  */
-import React, { PureComponent } from 'react'
-import { Radio, InputNumber, Row, Col, List, message, Select } from 'antd'
-const { Group } = Radio
-import { isNumber } from '../utils/index'
+import React from 'react';
+import { Radio, InputNumber, RadioChangeEvent, List, message, Select } from 'antd';
+import { isNumber } from 'utils/index';
+import { CronData } from 'index';
 
-export default class Month extends PureComponent {
-    constructor(props) {
+const { Group } = Radio;
+
+interface PropsType {
+    month: CronData,
+    onChange: Function,
+}
+
+export default class Month extends React.Component<PropsType, {}> {
+    constructor(props: PropsType) {
         super(props)
         this.formatMonthOptions()
     }
 
-    changeParams(type, value) {
-        const state = { ...this.props.month }
-        state[type] = value
-        if (type === 'start') {
-            if (state.end - state.start <= 1) {
-                state.end = value + 1
-            }
-        }
-        if (type === 'end') {
-            if (state.end - state.start <= 1) {
-                state.start = value - 1
-            }
-        }
-        this.props.onChange(state)
-    }
-
-    // eachMonthOptions() {
-    //     const options = [];
-    //     for (let i = 1; i < 13; i++) {
-    //         options.push({ label: `${i}月`, value: `${i}` });
-    //     }
-    //     return options;
-    // }
+    monthOptions: JSX.Element[] = [];
 
     formatMonthOptions() {
         this.monthOptions = []
@@ -52,11 +37,8 @@ export default class Month extends PureComponent {
         }
     }
 
-    changeType = (e) => {
+    changeType = (e: RadioChangeEvent) => {
         const state = { ...this.props.month }
-        // if (e.target.value === "some") {
-        //     state.some = ["1"];
-        // }
         state.type = e.target.value
         this.props.onChange(state)
     }
@@ -84,10 +66,14 @@ export default class Month extends PureComponent {
                                 placeholder="月"
                                 size="small"
                                 value={start}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 11) {
-                                        this.changeParams('start', value)
+                                        this.props.month.start = value;
+                                        if (this.props.month.end - this.props.month.start <= 1) {
+                                            this.props.month.end = value + 1
+                                        }
+                                        this.props.onChange(this.props.month);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -102,10 +88,14 @@ export default class Month extends PureComponent {
                                 placeholder="月"
                                 value={end}
                                 size="small"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 2 && Number(value) <= 12) {
-                                        this.changeParams('end', value)
+                                        this.props.month.end = value;
+                                        if (this.props.month.end - this.props.month.start <= 1) {
+                                            this.props.month.start = value - 1;
+                                        }
+                                        this.props.onChange(this.props.month);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -124,10 +114,11 @@ export default class Month extends PureComponent {
                                 placeholder="天"
                                 size="small"
                                 value={begin}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 12) {
-                                        this.changeParams('begin', value)
+                                        this.props.month.begin = value;
+                                        this.props.onChange(this.props.month);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -140,12 +131,12 @@ export default class Month extends PureComponent {
                                 max={12}
                                 defaultValue={1}
                                 placeholder="月"
-                                endYear={beginEvery}
                                 size="small"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 12) {
-                                        this.changeParams('beginEvery', value)
+                                        this.props.month.beginEvery = value;
+                                        this.props.onChange(this.props.month);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -158,7 +149,7 @@ export default class Month extends PureComponent {
                             <Radio value="some">具体月数（可多选）</Radio>
                             <Select
                                 style={{ width: 'auto' }}
-                                defaultValue={1}
+                                defaultValue={ ['1']}
                                 mode="multiple"
                                 placeholder="月数"
                                 size="small"
@@ -168,7 +159,8 @@ export default class Month extends PureComponent {
                                     if (value.length < 1) {
                                         return message.warn('至少选择一项')
                                     }
-                                    this.changeParams('some', value)
+                                    this.props.month.some = value;
+                                    this.props.onChange(this.props.month);
                                 }}
                                 disabled={type !== 'some'}
                             >

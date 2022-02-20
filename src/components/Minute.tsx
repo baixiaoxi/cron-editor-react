@@ -3,27 +3,25 @@
  * 作者：宋鑫鑫
  * 日期：2019.11.04
  */
-import React, { PureComponent } from 'react'
-import { Radio, InputNumber, message, List, Checkbox, Select } from 'antd'
-const { Group } = Radio
-import { isNumber } from '../utils/index'
+import React from 'react';
+import { Radio, InputNumber, RadioChangeEvent, message, List, Select } from 'antd';
+import { isNumber } from 'utils/index';
+import { CronData } from 'index';
 
-export default class Minute extends PureComponent {
-    constructor(props) {
+const { Group } = Radio;
+
+interface PropsType {
+    minute: CronData,
+    onChange: Function,
+}
+
+export default class Minute extends React.Component<PropsType, {}> {
+    constructor(props: PropsType) {
         super(props)
         this.formatMinuteOptions()
     }
 
-    // formatMinuteOptions() {
-    //     this.minuteOptions = [];
-    //     for (let x = 0; x < 60; x++) {
-    //         this.minuteOptions.push({
-    //             label: x < 10 ? `0${x}` : x,
-    //             value: `${x}`
-    //         });
-    //     }
-    // }
-
+    minuteOptions: JSX.Element[] = [];
     formatMinuteOptions() {
         this.minuteOptions = []
         for (let x = 0; x < 60; x++) {
@@ -38,23 +36,7 @@ export default class Minute extends PureComponent {
         }
     }
 
-    changeParams(type, value) {
-        const state = { ...this.props.minute }
-        state[type] = value
-        if (type === 'start') {
-            if (state.end - state.start <= 1) {
-                state.end = value + 1
-            }
-        }
-        if (type === 'end') {
-            if (state.end - state.start <= 1) {
-                state.start = value - 1
-            }
-        }
-        this.props.onChange(state)
-    }
-
-    changeType = (e) => {
+    changeType = (e: RadioChangeEvent) => {
         const state = { ...this.props.minute }
         // if (e.target.value === "some") {
         //     state.some = ["1"];
@@ -85,10 +67,14 @@ export default class Minute extends PureComponent {
                                 placeholder="分"
                                 size="small"
                                 value={start}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 0 && Number(value) <= 58) {
-                                        this.changeParams('start', value)
+                                        this.props.minute.start = value;
+                                        if (this.props.minute.end - this.props.minute.start <= 1) {
+                                            this.props.minute.end = value + 1
+                                        }
+                                        this.props.onChange(this.props.minute)
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -104,10 +90,14 @@ export default class Minute extends PureComponent {
                                 placeholder="分"
                                 value={end}
                                 size="small"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 59) {
-                                        this.changeParams('end', value)
+                                        this.props.minute.end = value;
+                                        if (this.props.minute.end - this.props.minute.start <= 1) {
+                                            this.props.minute.start = value - 1;
+                                        }
+                                        this.props.onChange(this.props.minute);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -126,10 +116,11 @@ export default class Minute extends PureComponent {
                                 placeholder="分"
                                 size="small"
                                 value={begin}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 0 && Number(value) <= 59) {
-                                        this.changeParams('begin', value)
+                                        this.props.minute.begin = value;
+                                        this.props.onChange(this.props.minute);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -144,10 +135,11 @@ export default class Minute extends PureComponent {
                                 placeholder="分"
                                 size="small"
                                 value={beginEvery}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 59) {
-                                        this.changeParams('beginEvery', value)
+                                        this.props.minute.beginEvery = value;
+                                        this.props.onChange(this.props.minute);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -160,7 +152,7 @@ export default class Minute extends PureComponent {
                             <Radio value="some">具体分钟数（可多选）</Radio>
                             <Select
                                 style={{ width: 'auto' }}
-                                defaultValue={1}
+                                defaultValue={['1']}
                                 mode="multiple"
                                 placeholder="分钟数"
                                 size="small"
@@ -170,23 +162,14 @@ export default class Minute extends PureComponent {
                                     if (value.length < 1) {
                                         return message.warn('至少选择一项')
                                     }
-                                    this.changeParams('some', value)
+
+                                    this.props.minute.some = value;
+                                    this.props.onChange(this.props.minute);
                                 }}
                                 disabled={type !== 'some'}
                             >
                                 {this.minuteOptions}
                             </Select>
-                            {/* <Checkbox.Group
-                                value={some}
-                                onChange={value => {
-                                    if (value.length < 1) {
-                                        return message.warn("至少选择一项");
-                                    }
-                                    this.changeParams("some", value);
-                                }}
-                                options={this.minuteOptions}
-                                disabled={type !== "some"}
-                            /> */}
                         </List.Item>
                     </List>
                 </Group>

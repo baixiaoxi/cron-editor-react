@@ -3,13 +3,20 @@
  * 作者：宋鑫鑫
  * 日期：2019.11.04
  */
-import React, { PureComponent } from "react";
-import { Radio, InputNumber, Row, Col, Select, List, Checkbox, message } from "antd";
-const { Group } = Radio;
-import { isNumber } from '../utils/index'
+import React from 'react';
+import { Radio, InputNumber, RadioChangeEvent, Select, List, message } from 'antd';
+import { isNumber } from 'utils/index';
+import { CronData } from 'index';
 
-export default class Day extends PureComponent {
-    constructor(props) {
+const { Group } = Radio;
+
+interface PropsType {
+    day: CronData,
+    onChange: Function,
+}
+
+export default class Day extends React.Component<PropsType, {}> {
+    constructor(props: PropsType) {
         super(props);
         this.formatDayOptions();
     }
@@ -24,6 +31,7 @@ export default class Day extends PureComponent {
     //     }
     // }
 
+    dayOptions: JSX.Element[] = [];
     formatDayOptions() {
         this.dayOptions = [];
         for (let x = 1; x < 32; x++) {
@@ -38,23 +46,7 @@ export default class Day extends PureComponent {
         }
     }
 
-    changeParams(type, value) {
-        const state = { ...this.props.day };
-        state[type] = value;
-        if (type === 'start') {
-            if (state.end - state.start <= 1) {
-                state.end = value + 1;
-            }
-        }
-        if (type === 'end') {
-            if (state.end - state.start <= 1) {
-                state.start = value - 1;
-            }
-        }
-        this.props.onChange(state);
-    }
-
-    changeType = e => {
+    changeType = (e: RadioChangeEvent) => {
         const state = { ...this.props.day };
         // if (e.target.value === "some") {
         //     state.some = ["1"];
@@ -87,10 +79,15 @@ export default class Day extends PureComponent {
                                 placeholder="日"
                                 size="small"
                                 value={start}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1 && Number(value) <= 30) {
-                                        this.changeParams("start", value);
+                                        this.props.day.start = value;
+                                        if (this.props.day.end - this.props.day.start <= 1) {
+                                            this.props.day.end = value + 1;
+                                        }
+
+                                        this.props.onChange(this.props.day);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -106,10 +103,15 @@ export default class Day extends PureComponent {
                                 placeholder="日"
                                 value={end}
                                 size="small"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 2 && Number(value) <= 31) {
-                                        this.changeParams("end", value);
+                                        this.props.day.end = value;
+                                        if (this.props.day.end - this.props.day.start <= 1) {
+                                            this.props.day.start = value - 1;
+                                        }
+                                
+                                        this.props.onChange(this.props.day);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -127,10 +129,11 @@ export default class Day extends PureComponent {
                                 placeholder="日"
                                 size="small"
                                 value={begin}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1) {
-                                        this.changeParams("begin", value);
+                                        this.props.day.begin = value;
+                                        this.props.onChange(this.props.day);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -144,10 +147,11 @@ export default class Day extends PureComponent {
                                 placeholder="天"
                                 size="small"
                                 value={beginEvery}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 0) {
-                                        this.changeParams("beginEvery", value);
+                                        this.props.day.beginEvery = value;
+                                        this.props.onChange(this.props.day);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -165,10 +169,11 @@ export default class Day extends PureComponent {
                                 placeholder="日"
                                 size="small"
                                 value={closeWorkDay}
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= 1) {
-                                        this.changeParams("closeWorkDay", value);
+                                        this.props.day.closeWorkDay = value;
+                                        this.props.onChange(this.props.day);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -185,10 +190,11 @@ export default class Day extends PureComponent {
                                     placeholder="天"
                                     size="small"
                                     value={last}
-                                    formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                    formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                     onChange={(value) => {
                                         if (isNumber(value) && Number(value) >= 0) {
-                                            this.changeParams("last", value);
+                                            this.props.day.last = value;
+                                            this.props.onChange(this.props.day);
                                         } else {
                                             message.info('输入不合法')
                                         }
@@ -213,20 +219,13 @@ export default class Day extends PureComponent {
                                     if (value.length < 1) {
                                         return message.warn("至少选择一项");
                                     }
-                                    this.changeParams("some", value);
+                                    this.props.day.some = value;
+                                    this.props.onChange(this.props.day);
                                 }}
                                 disabled={type !== "some"}
                             >
                                 {this.dayOptions}
                             </Select>
-                            {/* <Checkbox.Group
-                                value={some}
-                                onChange={value => {
-                                    this.changeParams("some", value);
-                                }}
-                                options={this.dayOptions}
-                                disabled={type !== "some"}
-                            /> */}
                         </List.Item>
                     </List>
                 </Group>

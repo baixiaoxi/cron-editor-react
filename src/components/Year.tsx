@@ -3,28 +3,19 @@
  * 作者：宋鑫鑫
  * 日期：2019.11.04
  */
-import React, { PureComponent } from 'react'
-import { Radio, InputNumber, message, Col, List } from 'antd'
-const { Group } = Radio
-import { isNumber } from '../utils/index'
+import React from 'react';
+import { Radio, InputNumber, message, Col, List } from 'antd';
+import { isNumber } from 'utils/index';
+import { CronData } from 'index';
 
-export default class Year extends PureComponent {
-    changeParams(type, value) {
-        const state = { ...this.props.year }
-        state[type] = value
-        if (type === 'start') {
-            if (state.end - state.start <= 1) {
-                state.end = value + 1
-            }
-        }
-        if (type === 'end') {
-            if (state.end - state.start <= 1) {
-                state.start = value - 1
-            }
-        }
-        this.props.onChange(state)
-    }
+const { Group } = Radio;
 
+interface PropsType {
+    year: CronData,
+    onChange: Function,
+}
+
+export default class Year extends React.Component<PropsType, {}> {
     render() {
         const {
             year: { type, start, end },
@@ -34,7 +25,8 @@ export default class Year extends PureComponent {
                 <Group
                     value={type}
                     onChange={(e) => {
-                        this.changeParams('type', e.target.value)
+                        this.props.year.type = e.target.value;
+                        this.props.onChange(this.props.year);
                     }}
                     defaultValue=""
                 >
@@ -51,10 +43,14 @@ export default class Year extends PureComponent {
                                 min={new Date().getFullYear()}
                                 value={start}
                                 placeholder="年"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= new Date().getFullYear()) {
-                                        this.changeParams('start', value)
+                                        this.props.year.start = value;
+                                        if (this.props.year.end - this.props.year.start <= 1) {
+                                            this.props.year.end = value + 1
+                                        }
+                                        this.props.onChange(this.props.year);
                                     } else {
                                         message.info('输入不合法')
                                     }
@@ -66,10 +62,14 @@ export default class Year extends PureComponent {
                                 min={new Date().getFullYear() + 1}
                                 value={end}
                                 placeholder="年"
-                                formatter={(value) => value.toString().replace(/[^\d\.]/g, '')}
+                                formatter={(value) => value?.toString().replace(/[^\d\.]/g, '') ?? ''}
                                 onChange={(value) => {
                                     if (isNumber(value) && Number(value) >= new Date().getFullYear() + 1) {
-                                        this.changeParams('end', value)
+                                        this.props.year.end = value;
+                                        if (this.props.year.end - this.props.year.start <= 1) {
+                                            this.props.year.start = value - 1
+                                        }
+                                        this.props.onChange(this.props.year);
                                     } else {
                                         message.info('输入不合法')
                                     }
