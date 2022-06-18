@@ -408,7 +408,7 @@ export default class Cron extends React.Component<PropsType, StateType> {
         console.log('crontab', crontab)
         onChange && onChange(crontab)
         if (!showRunTime) return // 既然不需要，那就不算了
-        let tempArr = []
+        let tempArr: string[] = []
         const weekCron = crontab.split(' ')[5]
         try {
             if (weekCron !== '?') {
