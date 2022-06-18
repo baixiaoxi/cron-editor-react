@@ -64,11 +64,7 @@ const Popconfirm = React.forwardRef<unknown, PopconfirmProps>((props, ref) => {
   const renderOverlay = (prefixCls: string) => {
     const { mainContent } = props;
 
-    return (
-      <div className={`${prefixCls}-inner-content`}>
-        {mainContent}
-      </div>
-    );
+    return <div className={`${prefixCls}-inner-content`}>{mainContent}</div>;
   };
 
   const {
@@ -101,18 +97,17 @@ const Popconfirm = React.forwardRef<unknown, PopconfirmProps>((props, ref) => {
       ref={ref as any}
       transitionName={getTransitionName(rootPrefixCls, 'zoom-big', props.transitionName)}
     >
-        {cloneElement(children, {
+      {cloneElement(children, {
         onKeyDown: (e: React.KeyboardEvent<any>) => {
-            if (React.isValidElement(children)) {
+          if (React.isValidElement(children)) {
             children?.props.onKeyDown?.(e);
-            }
-            onKeyDown(e);
+          }
+          onKeyDown(e);
         },
-        })}
+      })}
     </Tooltip>
   );
 });
-
 
 Popconfirm.defaultProps = {
   placement: 'top' as PopconfirmProps['placement'],
