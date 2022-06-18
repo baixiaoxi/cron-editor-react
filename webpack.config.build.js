@@ -2,7 +2,6 @@ const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const path = require("path/posix");
 const TerserPlugin = require('terser-webpack-plugin');
 const tsImportPluginFactory = require('ts-import-plugin');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const webpackConfig = {
     entry: './src/index.tsx',
@@ -30,9 +29,9 @@ const webpackConfig = {
     module: {
         rules: [
             {
-                test: /\.(js|jsx|ts|tsx)$/,
+                test: /\.tsx?$/,
                 loader: 'ts-loader',
-                exclude: /(node_modules|bower_components)/,
+                exclude: /node_modules/,
                 options: {
                     transpileOnly: true,
                     getCustomTransformers: () => ({
